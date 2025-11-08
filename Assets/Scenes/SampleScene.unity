@@ -285,10 +285,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 514731318}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3bf16fb23d0b07f4192786d3e36a1c28, type: 3}
+  m_Script: {fileID: 11500000, guid: 10d175b3e6c1b184ea4f75fac25e6a02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  speed: 8
+  speed: 5
 --- !u!212 &514731320
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -377,7 +377,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.05
-  m_GravityScale: 5
+  m_GravityScale: 50
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
