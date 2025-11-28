@@ -22,7 +22,8 @@ public class PlayerController : MonoBehaviour
         rb.linearVelocity = new Vector2(moveInput * speed,0);
         if (Input.GetKeyDown("space"))
         {
-            rb.linearVelocity = new Vector2(0, jumpAcceleration); //????
+            /*rb.linearVelocity = new Vector2(0, jumpAcceleration);*/ //????
+            rb.linearVelocity = Vector2.up * jumpAcceleration;
             //Debug.Log("Jump!");
         }
         //v2 = transform.position;
