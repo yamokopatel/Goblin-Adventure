@@ -8,25 +8,37 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody2D rb;
     private Vector2 v2;
+    private float direction;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        //v2 = transform.position;
+        direction = 1;
     }
 
     private void FixedUpdate()
     {
         moveInput = Input.GetAxis("Horizontal");
-        rb.linearVelocity = new Vector2(moveInput * speed,0);
+        rb.linearVelocity = new Vector2(moveInput * speed,rb.linearVelocity.y);
+        if (Input.GetKeyDown("d") /*|| Input.GetKeyDown("right")*/)
+        {
+            direction = 1;
+        }
+        else if(Input.GetKeyDown("a") /*|| Input.GetKeyDown("left")*/)
+        {
+            direction = -1;
+        }
+    }
+    private void Update()
+    {
         if (Input.GetKeyDown("space"))
         {
-            /*rb.linearVelocity = new Vector2(0, jumpAcceleration);*/ //????
-            rb.linearVelocity = Vector2.up * jumpAcceleration;
-            //Debug.Log("Jump!");
+            rb.linearVelocity = Vector2.up* jumpAcceleration;
         }
-        //v2 = transform.position;
-        //Debug.Log(v2);
+    }
+    public float GetDirection()
+    {
+        return direction;
     }
 }
