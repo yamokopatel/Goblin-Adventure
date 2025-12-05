@@ -5,14 +5,13 @@ public class SpearController : MonoBehaviour
     private Rigidbody2D rb;
     private int existTime;
     public float hSpeed;
-    public GameObject hero;
     private float direction;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         existTime = 3000;
         rb = GetComponent<Rigidbody2D>();
-        direction = hero.GetDirection();
+        direction = System.Convert.ToSingle(GameObject.Find("Player").GetComponent("direction"));
     }
 
     private void FixedUpdate()

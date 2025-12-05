@@ -151,6 +151,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97f93f40fcfe9cb489dc95d7bf0531c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpearController
+  hSpeed: 8
 --- !u!50 &-7093653940320756048
 Rigidbody2D:
   serializedVersion: 5
@@ -163,7 +164,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 0.0001
+  m_Mass: 100
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_GravityScale: 0
@@ -177,4 +178,4 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4

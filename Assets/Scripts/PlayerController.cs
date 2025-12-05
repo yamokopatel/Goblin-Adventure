@@ -8,7 +8,7 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody2D rb;
     private Vector2 v2;
-    private float direction;
+    public float direction;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
