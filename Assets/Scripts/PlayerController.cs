@@ -21,12 +21,21 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (Input.GetKeyDown("d") || Input.GetKeyDown("a"))
-        {
-            moveInput = Input.GetAxis("Horizontal");
-        }
+        Walk();
+        GetDirection();
+    }
+    private void Update()
+    {
+        Jump();
+    }
+    //Action functions
+    private void Walk()
+    {
+        moveInput = Input.GetAxis("Horizontal");
         rb.linearVelocity = new Vector2(moveInput * speed, rb.linearVelocity.y);
-        //get direction
+    }
+    private void GetDirection()
+    {
         previousX = currentX;
         currentX = transform.position.x;
         if (currentX > previousX)
@@ -38,7 +47,7 @@ public class PlayerController : MonoBehaviour
             direction = -1;
         }
     }
-    private void Update()
+    private void Jump()
     {
         if (Input.GetKeyDown("space"))
         {
