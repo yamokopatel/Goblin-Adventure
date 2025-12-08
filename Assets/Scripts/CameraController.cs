@@ -24,31 +24,29 @@ public class CameraController : MonoBehaviour
         //move
         float newX;
         float newY;
-        if (distance < 0.1)
+        float q;
+        if (distance < 0.1f)
         {
-            newX = (float)(dX * 0.1);
-            newY = (float)(dY * 0.1);
+            q = 0.1f;
         }
-        else if (distance < 0.3)
+        else if (distance < 0.3f)
         {
-            newX = (float)(dX * 0.2);
-            newY = (float)(dY * 0.2);
+            q = 0.2f;
         }
-        else if (distance < 0.6)
+        else if (distance < 0.6f)
         {
-            newX = (float)(dX * 0.5);
-            newY = (float)(dY * 0.5);
+            q = 0.5f;
         }
-        else if (distance < 0.8)
+        else if (distance < 0.8f)
         {
-            newX = (float)(dX * 0.8);
-            newY = (float)(dY * 0.8);
+            q = 0.8f;
         }
         else
         {
-            newX = (float)(dX * 0.9);
-            newY = (float)(dY * 0.9);
+            q = 0.9f;
         }
+        newX = dX * q;
+        newY = dY * q;
         transform.position = new Vector3(selfPosition.x + newX, selfPosition.y + newY, -10);
     }
 }
