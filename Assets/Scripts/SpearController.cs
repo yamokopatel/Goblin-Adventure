@@ -25,7 +25,7 @@ public class SpearController : MonoBehaviour
             rb.linearVelocity = Vector2.up * existTime;
             if(existTime < -8)
             {
-                Destroy(this);
+                Destroy(this.gameObject);
             }
         }
         existTime--;

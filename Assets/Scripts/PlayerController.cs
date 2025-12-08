@@ -5,27 +5,35 @@ public class PlayerController : MonoBehaviour
     public float speed;
     public float jumpAcceleration;
     private float moveInput;
+    public float direction;
 
     private Rigidbody2D rb;
-    private Vector2 v2;
-    public float direction;
+    private float currentX;
+    private float previousX;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         direction = 1;
+        currentX = transform.position.x;
     }
 
     private void FixedUpdate()
     {
-        moveInput = Input.GetAxis("Horizontal");
-        rb.linearVelocity = new Vector2(moveInput * speed,rb.linearVelocity.y);
-        if (Input.GetKeyDown("d") /*|| Input.GetKeyDown("right")*/)
+        if (Input.GetKeyDown("d") || Input.GetKeyDown("a"))
+        {
+            moveInput = Input.GetAxis("Horizontal");
+        }
+        rb.linearVelocity = new Vector2(moveInput * speed, rb.linearVelocity.y);
+        //get direction
+        previousX = currentX;
+        currentX = transform.position.x;
+        if (currentX > previousX)
         {
             direction = 1;
         }
-        else if(Input.GetKeyDown("a") /*|| Input.GetKeyDown("left")*/)
+        else if (currentX < previousX)
         {
             direction = -1;
         }
@@ -34,11 +42,7 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKeyDown("space"))
         {
-            rb.linearVelocity = Vector2.up* jumpAcceleration;
+            rb.linearVelocity = Vector2.up * jumpAcceleration;
         }
-    }
-    public float GetDirection()
-    {
-        return direction;
     }
 }
