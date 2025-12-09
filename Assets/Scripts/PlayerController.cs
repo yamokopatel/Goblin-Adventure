@@ -5,7 +5,9 @@ public class PlayerController : MonoBehaviour
     public float speed;
     public float jumpAcceleration;
     private float moveInput;
-    public float direction;
+    private float direction;
+    public GameObject spearPrefab;
+    private float spearCooldownTime;
 
     private Rigidbody2D rb;
     private float currentX;
@@ -17,12 +19,15 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         direction = 1;
         currentX = transform.position.x;
+        spearCooldownTime = 0;
     }
 
     private void FixedUpdate()
     {
         Walk();
         GetDirection();
+        SpearThrow();
+        SpearCooldown();
     }
     private void Update()
     {
@@ -52,6 +57,22 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown("space"))
         {
             rb.linearVelocity = Vector2.up * jumpAcceleration;
+        }
+    }
+    private void SpearThrow()
+    {
+        if (Input.GetKeyDown("e") && spearCooldownTime == 0f)
+        {
+            Vector2 launchPos = new Vector2(transform.position.x + direction, transform.position.y);
+            GameObject spearInstance = Instantiate(spearPrefab,launchPos,Quaternion.identity);
+            spearCooldownTime = 150f;
+        }
+    }
+    private void SpearCooldown()
+    {
+        if(spearCooldownTime > 0f)
+        {
+            spearCooldownTime--;
         }
     }
 }
