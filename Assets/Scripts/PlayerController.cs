@@ -5,13 +5,14 @@ public class PlayerController : MonoBehaviour
     public float speed;
     public float jumpAcceleration;
     private float moveInput;
-    private float direction;
     public GameObject spearPrefab;
     private float spearCooldownTime;
 
     private Rigidbody2D rb;
     private float currentX;
     private float previousX;
+    private float direction;
+    private float previousDirection;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -26,6 +27,7 @@ public class PlayerController : MonoBehaviour
     {
         Walk();
         GetDirection();
+        Flip();
         SpearThrow();
         SpearCooldown();
     }
@@ -41,6 +43,7 @@ public class PlayerController : MonoBehaviour
     }
     private void GetDirection()
     {
+        previousDirection = direction;
         previousX = currentX;
         currentX = transform.position.x;
         if (currentX > previousX)
@@ -73,6 +76,15 @@ public class PlayerController : MonoBehaviour
         if(spearCooldownTime > 0f)
         {
             spearCooldownTime--;
+        }
+    }
+    private void Flip()
+    {
+        if(direction != previousDirection)
+        {
+            Vector3 scaler = transform.localScale;
+            scaler.x *= -1f;
+            transform.localScale = scaler;
         }
     }
 }

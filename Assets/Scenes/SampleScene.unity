@@ -167,6 +167,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1356711879402790826, guid: 992716cd8cfdad04dac52002efc6dbec, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6699380603515579179, guid: 992716cd8cfdad04dac52002efc6dbec, type: 3}
       propertyPath: m_Name
       value: Spear (1)
@@ -210,7 +214,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   speed: 5
   jumpAcceleration: 8
-  direction: 0
   spearPrefab: {fileID: 6699380603515579179, guid: 992716cd8cfdad04dac52002efc6dbec, type: 3}
 --- !u!212 &514731320
 SpriteRenderer:
