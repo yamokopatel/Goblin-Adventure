@@ -11,15 +11,27 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rb;
     private float currentX;
     private float previousX;
+    private float currentY;
+    private float previousY;
     private float direction;
     private float previousDirection;
+
+    private bool isGrounded;
+    private bool isHanging;
+    public Transform feetPos;
+    public float checkRaduis;
+    public LayerMask whatIsGround;
+
+    private Animator anim;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
         direction = 1;
         currentX = transform.position.x;
+        currentY = transform.position.y;
         spearCooldownTime = 0;
     }
 
@@ -33,6 +45,8 @@ public class PlayerController : MonoBehaviour
     }
     private void Update()
     {
+        CheckGrounded();
+        ChechHanging();
         Jump();
     }
     //Action functions
@@ -57,10 +71,20 @@ public class PlayerController : MonoBehaviour
     }
     private void Jump()
     {
-        if (Input.GetKeyDown("space"))
+        if (Input.GetKeyDown("space") && isGrounded)
         {
             rb.linearVelocity = Vector2.up * jumpAcceleration;
         }
+        /*else if(Input.GetKeyDown("space") && !isGrounded && isHanging)
+        {
+            rb.linearVelocity = Vector2.up * jumpAcceleration / 2;
+            rb.linearVelocity = Vector2.right * direction * speed / 2;
+        }
+        else if(Input.GetKeyDown("space") && isGrounded && isHanging)
+        {
+            rb.linearVelocity = Vector2.up * jumpAcceleration;
+            rb.linearVelocity = Vector2.right * direction * speed / 4;
+        }*/
     }
     private void SpearThrow()
     {
@@ -80,11 +104,39 @@ public class PlayerController : MonoBehaviour
     }
     private void Flip()
     {
-        if(direction != previousDirection)
+        if(direction != previousDirection && !isHanging)
         {
             Vector3 scaler = transform.localScale;
             scaler.x *= -1f;
             transform.localScale = scaler;
+        }
+    }
+    private void CheckGrounded()
+    {
+        isGrounded = Physics2D.OverlapCircle(feetPos.position, checkRaduis, whatIsGround);
+    }
+    private void ChechHanging()
+    {
+        previousY = currentY;
+        currentY = transform.position.y;
+        float dY = currentY - previousY;
+        if(dY < 0f)
+        {
+            dY *= -1f;
+        }
+        float dX = currentX - previousX;
+        if (dX < 0f)
+        {
+            dX *= -1f;
+        }
+
+        if (!isGrounded && dY < 0.1f && dX < 0.3f)
+        {
+            isHanging = true;
+        }
+        else
+        {
+            isHanging = false;
         }
     }
 }
