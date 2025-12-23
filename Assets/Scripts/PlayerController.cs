@@ -52,10 +52,10 @@ public class PlayerController : MonoBehaviour
     }
     private void Update()
     {
-        CheckGrounded();
+        isGrounded = CheckPos(feetPos,whatIsGround,true);
         if(isGrounded == false)
         {
-            ChechHanging();
+            isHanging = CheckPos(hangPos,whatIsGround,!isGrounded);
         }
         Jump();
     }
@@ -67,7 +67,7 @@ public class PlayerController : MonoBehaviour
     }
     private void GetDirection()
     {
-        if (!CheckHand())
+        if (!CheckPos(handPos,whatIsGround,isGrounded))
         {
             previousDirection = direction;
             previousX = currentX;
@@ -84,27 +84,26 @@ public class PlayerController : MonoBehaviour
     }
     private void Jump()
     {
-        //float scaleX = transform.localScale.x;
         if (Input.GetKeyDown("space") && isGrounded)
         {
             rb.linearVelocity = Vector2.up * jumpAcceleration;
         }
-        /*else if(Input.GetKeyDown("space") && isHanging)
-        {
-            rb.linearVelocity = Vector2.up * jumpAcceleration / 2;
-            rb.linearVelocity = Vector2.right * scaleX * speed / 2;
-        }
-        else if(Input.GetKeyDown("space") && CheckHand())
-        {
-            rb.linearVelocity = Vector2.up * jumpAcceleration;
-            rb.linearVelocity = Vector2.right * scaleX * (-1) * speed / 8;
-        }*/
     }
     private void SpearThrow()
     {
+        float xAddentum;
+        if (CheckPos(spearSpawnPos, whatIsGround, true))
+        {
+            xAddentum = direction / 2;
+        }
+        else
+        {
+            xAddentum = direction;
+        }
+        //
         if (Input.GetKeyDown("e") && spearCooldownTime == 0f)
         {
-            Vector2 launchPos = new Vector2(transform.position.x + direction, transform.position.y);
+            Vector2 launchPos = new Vector2(transform.position.x + xAddentum, transform.position.y);
             GameObject spearInstance = Instantiate(spearPrefab,launchPos,Quaternion.identity);
             spearCooldownTime = secSpearCooldown * 50f;
         }
@@ -124,22 +123,10 @@ public class PlayerController : MonoBehaviour
             scaler.x *= -1f;
             transform.localScale = scaler;
         }
-        ChechHanging();
+        isHanging = CheckPos(hangPos, whatIsGround, !isGrounded);
     }
-    private void CheckGrounded()
+    private bool CheckPos(Transform pos, LayerMask checkLayer, bool adjunctBool)
     {
-        isGrounded = Physics2D.OverlapCircle(feetPos.position, checkRaduis, whatIsGround);
-    }
-    private void ChechHanging()
-    {
-        isHanging = Physics2D.OverlapCircle(hangPos.position, checkRaduis, whatIsGround) && !isGrounded;
-    }
-    private bool CheckHand()
-    {
-        if (isGrounded)
-        {
-            return Physics2D.OverlapCircle(handPos.position, checkRaduis, whatIsGround);
-        }
-        return false;
+        return Physics2D.OverlapCircle(pos.position, checkRaduis, checkLayer) && adjunctBool;
     }
 }
