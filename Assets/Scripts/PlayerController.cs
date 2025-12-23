@@ -18,9 +18,14 @@ public class PlayerController : MonoBehaviour
 
     private bool isGrounded;
     private bool isHanging;
+    private bool isClimbing;
     public Transform feetPos;
+    public Transform hangPos;
+    public Transform handPos;
+    public Transform climbPos;
     public float checkRaduis;
     public LayerMask whatIsGround;
+    public LayerMask whatIsClimbable;
 
     private Animator anim;
 
@@ -46,7 +51,10 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         CheckGrounded();
-        ChechHanging();
+        if(isGrounded == false)
+        {
+            ChechHanging();
+        }
         Jump();
     }
     //Action functions
@@ -57,16 +65,19 @@ public class PlayerController : MonoBehaviour
     }
     private void GetDirection()
     {
-        previousDirection = direction;
-        previousX = currentX;
-        currentX = transform.position.x;
-        if (currentX > previousX)
+        if (!CheckHand())
         {
-            direction = 1;
-        }
-        else if (currentX < previousX)
-        {
-            direction = -1;
+            previousDirection = direction;
+            previousX = currentX;
+            currentX = transform.position.x;
+            if (currentX > previousX)
+            {
+                direction = 1;
+            }
+            else if (currentX < previousX)
+            {
+                direction = -1;
+            }
         }
     }
     private void Jump()
@@ -110,6 +121,7 @@ public class PlayerController : MonoBehaviour
             scaler.x *= -1f;
             transform.localScale = scaler;
         }
+        ChechHanging();
     }
     private void CheckGrounded()
     {
@@ -117,7 +129,7 @@ public class PlayerController : MonoBehaviour
     }
     private void ChechHanging()
     {
-        previousY = currentY;
+        /*previousY = currentY;
         currentY = transform.position.y;
         float dY = currentY - previousY;
         if(dY < 0f)
@@ -137,6 +149,15 @@ public class PlayerController : MonoBehaviour
         else
         {
             isHanging = false;
+        }*/
+        isHanging = Physics2D.OverlapCircle(hangPos.position, checkRaduis, whatIsGround) && !isGrounded;
+    }
+    private bool CheckHand()
+    {
+        if (isGrounded)
+        {
+            return Physics2D.OverlapCircle(handPos.position, checkRaduis, whatIsGround);
         }
+        return false;
     }
 }
