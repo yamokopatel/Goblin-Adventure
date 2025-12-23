@@ -1796,8 +1796,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   speed: 5
-  jumpAcceleration: 8
+  jumpAcceleration: 7
   spearPrefab: {fileID: 6699380603515579179, guid: 992716cd8cfdad04dac52002efc6dbec, type: 3}
+  secSpearCooldown: 3
+  spearSpawnPos: {fileID: 0}
   feetPos: {fileID: 1331765803}
   hangPos: {fileID: 1312885228}
   handPos: {fileID: 583091680}

@@ -6,6 +6,8 @@ public class PlayerController : MonoBehaviour
     public float jumpAcceleration;
     private float moveInput;
     public GameObject spearPrefab;
+    public float secSpearCooldown;
+    public Transform spearSpawnPos;
     private float spearCooldownTime;
 
     private Rigidbody2D rb;
@@ -82,19 +84,20 @@ public class PlayerController : MonoBehaviour
     }
     private void Jump()
     {
+        //float scaleX = transform.localScale.x;
         if (Input.GetKeyDown("space") && isGrounded)
         {
             rb.linearVelocity = Vector2.up * jumpAcceleration;
         }
-        /*else if(Input.GetKeyDown("space") && !isGrounded && isHanging)
+        /*else if(Input.GetKeyDown("space") && isHanging)
         {
             rb.linearVelocity = Vector2.up * jumpAcceleration / 2;
-            rb.linearVelocity = Vector2.right * direction * speed / 2;
+            rb.linearVelocity = Vector2.right * scaleX * speed / 2;
         }
-        else if(Input.GetKeyDown("space") && isGrounded && isHanging)
+        else if(Input.GetKeyDown("space") && CheckHand())
         {
             rb.linearVelocity = Vector2.up * jumpAcceleration;
-            rb.linearVelocity = Vector2.right * direction * speed / 4;
+            rb.linearVelocity = Vector2.right * scaleX * (-1) * speed / 8;
         }*/
     }
     private void SpearThrow()
@@ -103,7 +106,7 @@ public class PlayerController : MonoBehaviour
         {
             Vector2 launchPos = new Vector2(transform.position.x + direction, transform.position.y);
             GameObject spearInstance = Instantiate(spearPrefab,launchPos,Quaternion.identity);
-            spearCooldownTime = 150f;
+            spearCooldownTime = secSpearCooldown * 50f;
         }
     }
     private void SpearCooldown()
@@ -129,27 +132,6 @@ public class PlayerController : MonoBehaviour
     }
     private void ChechHanging()
     {
-        /*previousY = currentY;
-        currentY = transform.position.y;
-        float dY = currentY - previousY;
-        if(dY < 0f)
-        {
-            dY *= -1f;
-        }
-        float dX = currentX - previousX;
-        if (dX < 0f)
-        {
-            dX *= -1f;
-        }
-
-        if (!isGrounded && dY < 0.1f && dX < 0.3f)
-        {
-            isHanging = true;
-        }
-        else
-        {
-            isHanging = false;
-        }*/
         isHanging = Physics2D.OverlapCircle(hangPos.position, checkRaduis, whatIsGround) && !isGrounded;
     }
     private bool CheckHand()
