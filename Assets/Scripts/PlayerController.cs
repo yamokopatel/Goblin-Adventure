@@ -65,6 +65,8 @@ public class PlayerController : MonoBehaviour
         }
         Jump();
     }
+
+
     //Action functions
     private void Walk()
     {
@@ -101,6 +103,7 @@ public class PlayerController : MonoBehaviour
     }
     private void SpearThrow()
     {
+        //to find where throw spear
         float xAddentum;
         if (CheckPos(spearSpawnPos, whatIsGround, true))
         {
@@ -110,7 +113,8 @@ public class PlayerController : MonoBehaviour
         {
             xAddentum = direction;
         }
-        //
+        //without that spear can be launched OBB
+        //OBB - Out Of Bounds
         if (Input.GetKeyDown("e") && spearCooldownTime == 0f)
         {
             Vector2 launchPos = new Vector2(transform.position.x + xAddentum, transform.position.y);
@@ -135,10 +139,6 @@ public class PlayerController : MonoBehaviour
         }
         isHanging = CheckPos(hangPos, whatIsGround, !isGrounded);
     }
-    private bool CheckPos(Transform pos, LayerMask checkLayer, bool adjunctBool)
-    {
-        return Physics2D.OverlapCircle(pos.position, checkRaduis, checkLayer) && adjunctBool;
-    }
     private void CheckStanding()
     {
         if(currentX != previousX)
@@ -156,35 +156,43 @@ public class PlayerController : MonoBehaviour
     }
     private void Climb()
     {
-        /*if (isClimbing)
-        {
-
-            verInput = Input.GetAxis("Vertical");
-            rb.linearVelocity = new Vector2(moveInput * speed / 2.5, verInput * speed);
-        }*/
         if (ableToClimbing)
         {
-            if(Input.GetAxis("Vertical") != 0)
+            if(GetVertical != 0)
             {
                 isClimbing = true;
             }
             if(isClimbing)
             {
-                if(Input.GetAxis("Vertical") != 0)
+                if(GetVertical != 0)
                 {
-                    verInput = Input.GetAxis("Vertical");
+                    verInput = GetVertical;
                     rb.linearVelocity = new Vector2(moveInput * speed / 2.5f, verInput * speed);
 
                 }
                 else
                 {
+                    //to goblin don't slide while climbing
                     rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0.195f);
+                    //a little small value, but goblin sliding down VERY slow
                 }
             }
         }
         else
         {
             isClimbing = false;
+            //to can't start jump in air
         }
+    }
+
+
+    // DRY functions
+    private bool CheckPos(Transform pos, LayerMask checkLayer, bool adjunctBool)
+    {
+        return Physics2D.OverlapCircle(pos.position, checkRaduis, checkLayer) && adjunctBool;
+    }
+    private float GetVertical()
+    {
+        return Input.GetAxis("Vertical");
     }
 }
