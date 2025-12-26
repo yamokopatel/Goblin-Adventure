@@ -5,6 +5,7 @@ public class PlayerController : MonoBehaviour
     public float speed;
     public float jumpAcceleration;
     private float moveInput;
+    private float verInput;
     public GameObject spearPrefab;
     public float secSpearCooldown;
     public Transform spearSpawnPos;
@@ -20,6 +21,7 @@ public class PlayerController : MonoBehaviour
 
     private bool isGrounded;
     private bool isHanging;
+    private bool ableToClimbing;
     private bool isClimbing;
     public Transform feetPos;
     public Transform hangPos;
@@ -30,6 +32,7 @@ public class PlayerController : MonoBehaviour
     public LayerMask whatIsClimbable;
 
     private Animator anim;
+    private float standingTime;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -45,14 +48,17 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         Walk();
+        Climb();
         GetDirection();
         Flip();
         SpearThrow();
         SpearCooldown();
+        CheckStanding();
     }
     private void Update()
     {
         isGrounded = CheckPos(feetPos,whatIsGround,true);
+        ableToClimbing = CheckPos(climbPos,whatIsClimbable, true);
         if(isGrounded == false)
         {
             isHanging = CheckPos(hangPos,whatIsGround,!isGrounded);
@@ -84,9 +90,13 @@ public class PlayerController : MonoBehaviour
     }
     private void Jump()
     {
-        if (Input.GetKeyDown("space") && isGrounded)
+        if (Input.GetKeyDown("space") && (isGrounded || isClimbing))
         {
             rb.linearVelocity = Vector2.up * jumpAcceleration;
+            if (isClimbing)
+            {
+                isClimbing = false;
+            }
         }
     }
     private void SpearThrow()
@@ -128,5 +138,53 @@ public class PlayerController : MonoBehaviour
     private bool CheckPos(Transform pos, LayerMask checkLayer, bool adjunctBool)
     {
         return Physics2D.OverlapCircle(pos.position, checkRaduis, checkLayer) && adjunctBool;
+    }
+    private void CheckStanding()
+    {
+        if(currentX != previousX)
+        {
+            standingTime++;
+            if(standingTime > 301)
+            {
+                standingTime--;
+            }
+        }
+        else
+        {
+            standingTime = 0;
+        }
+    }
+    private void Climb()
+    {
+        /*if (isClimbing)
+        {
+
+            verInput = Input.GetAxis("Vertical");
+            rb.linearVelocity = new Vector2(moveInput * speed / 2.5, verInput * speed);
+        }*/
+        if (ableToClimbing)
+        {
+            if(Input.GetAxis("Vertical") != 0)
+            {
+                isClimbing = true;
+            }
+            if(isClimbing)
+            {
+                if(Input.GetAxis("Vertical") != 0)
+                {
+                    verInput = Input.GetAxis("Vertical");
+                    rb.linearVelocity = new Vector2(moveInput * speed / 2.5f, verInput * speed);
+
+                }
+                else
+                {
+                    rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0.195f);
+                }
+            }
+        }
+        else
+        {
+            isClimbing = false;
+        }
     }
 }
