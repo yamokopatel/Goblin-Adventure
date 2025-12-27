@@ -64,6 +64,7 @@ public class PlayerController : MonoBehaviour
             isHanging = CheckPos(hangPos,whatIsGround,!isGrounded);
         }
         Jump();
+        UpdateAnim();
     }
 
 
@@ -141,12 +142,11 @@ public class PlayerController : MonoBehaviour
     }
     private void CheckStanding()
     {
-        if(currentX != previousX)
+        if(currentX == previousX)
         {
-            standingTime++;
-            if(standingTime > 301)
+            if(standingTime < 301f)
             {
-                standingTime--;
+                standingTime++;
             }
         }
         else
@@ -182,6 +182,13 @@ public class PlayerController : MonoBehaviour
             isClimbing = false;
             //to can't start jump in air
         }
+    }
+    private void UpdateAnim()
+    {
+        anim.SetBool("isOnGround", isGrounded);
+        anim.SetBool("isClimbing", isClimbing);
+        anim.SetBool("isHanging", isHanging);
+        anim.SetFloat("standingTime", standingTime);
     }
 
 
