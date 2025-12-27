@@ -158,23 +158,22 @@ public class PlayerController : MonoBehaviour
     {
         if (ableToClimbing)
         {
-            if(GetVertical != 0)
+            if(GetVertical() != 0)
             {
                 isClimbing = true;
             }
             if(isClimbing)
             {
-                if(GetVertical != 0)
+                if(GetVertical() != 0)
                 {
-                    verInput = GetVertical;
+                    verInput = GetVertical();
                     rb.linearVelocity = new Vector2(moveInput * speed / 2.5f, verInput * speed);
 
                 }
                 else
                 {
                     //to goblin don't slide while climbing
-                    rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0.195f);
-                    //a little small value, but goblin sliding down VERY slow
+                    rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0.1962f);
                 }
             }
         }
