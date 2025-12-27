@@ -32,6 +32,8 @@ public class PlayerController : MonoBehaviour
     public LayerMask whatIsClimbable;
 
     private Animator anim;
+    private bool isStanding;
+    private bool isIdle;
     private float standingTime;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -54,6 +56,7 @@ public class PlayerController : MonoBehaviour
         SpearThrow();
         SpearCooldown();
         CheckStanding();
+        CheckIdle();
     }
     private void Update()
     {
@@ -140,7 +143,7 @@ public class PlayerController : MonoBehaviour
         }
         isHanging = CheckPos(hangPos, whatIsGround, !isGrounded);
     }
-    private void CheckStanding()
+    /*private void CheckStanding()
     {
         if(currentX == previousX)
         {
@@ -153,7 +156,7 @@ public class PlayerController : MonoBehaviour
         {
             standingTime = 0;
         }
-    }
+    }*/
     private void Climb()
     {
         if (ableToClimbing)
@@ -188,7 +191,37 @@ public class PlayerController : MonoBehaviour
         anim.SetBool("isOnGround", isGrounded);
         anim.SetBool("isClimbing", isClimbing);
         anim.SetBool("isHanging", isHanging);
-        anim.SetFloat("standingTime", standingTime);
+        anim.SetBool("isStanding", isStanding);
+        anim.SetBool("isIdle", isIdle);
+    }
+    private void CheckStanding()
+    {
+        if(isGrounded && previousX == currentX)
+        {
+            isStanding = true;
+        }
+        else
+        {
+            isStanding = false;
+        }
+    }
+    private void CheckIdle()
+    {
+        if (isGrounded && !isIdle)
+        {
+            if(isStanding)
+            {
+                standingTime++;
+                if (standingTime > 300)
+                {
+                    isIdle = true;
+                }
+            }
+        }
+        if(isIdle && (!isStanding || isClimbing || !isGrounded))
+        {
+            isIdle = false;
+        }
     }
 
 
