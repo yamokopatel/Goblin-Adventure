@@ -19,10 +19,7 @@ public class PlayerController : MonoBehaviour
     private float direction;
     private float previousDirection;
 
-    //private bool isGrounded;
-    //private bool isHanging;
     private bool ableToClimbing;
-    //private bool isClimbing;
     public Transform feetPos;
     public Transform hangPos;
     public Transform handPos;
@@ -34,8 +31,6 @@ public class PlayerController : MonoBehaviour
     private bool[/* isGrounded, isClimbing, isHanging, isStanding, isIdle */] states;
 
     private Animator anim;
-    //private bool isStanding;
-    //private bool isIdle;
     private float standingTime;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -61,6 +56,7 @@ public class PlayerController : MonoBehaviour
         Flip();
         SpearThrow();
         SpearCooldown();
+        UpdateAnim();
     }
     private void Update()
     {
@@ -71,7 +67,6 @@ public class PlayerController : MonoBehaviour
             states[2] = CheckPos(hangPos, whatIsGround, !states[0]);
         }
         Jump();
-        UpdateAnim();
     }
 
 
