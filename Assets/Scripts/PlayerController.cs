@@ -19,10 +19,10 @@ public class PlayerController : MonoBehaviour
     private float direction;
     private float previousDirection;
 
-    private bool isGrounded;
-    private bool isHanging;
+    //private bool isGrounded;
+    //private bool isHanging;
     private bool ableToClimbing;
-    private bool isClimbing;
+    //private bool isClimbing;
     public Transform feetPos;
     public Transform hangPos;
     public Transform handPos;
@@ -31,9 +31,11 @@ public class PlayerController : MonoBehaviour
     public LayerMask whatIsGround;
     public LayerMask whatIsClimbable;
 
+    private bool[/* isGrounded, isClimbing, isHanging, isStanding, isIdle */] states;
+
     private Animator anim;
-    private bool isStanding;
-    private bool isIdle;
+    //private bool isStanding;
+    //private bool isIdle;
     private float standingTime;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -45,26 +47,28 @@ public class PlayerController : MonoBehaviour
         currentX = transform.position.x;
         currentY = transform.position.y;
         spearCooldownTime = 0;
+        states = new bool[5];
     }
 
     private void FixedUpdate()
     {
+        CheckClimbing();
+        CheckStanding();
+        CheckIdle();
         Walk();
         Climb();
         GetDirection();
         Flip();
         SpearThrow();
         SpearCooldown();
-        CheckStanding();
-        CheckIdle();
     }
     private void Update()
     {
-        isGrounded = CheckPos(feetPos,whatIsGround,true);
+        states[0] = CheckPos(feetPos,whatIsGround,true);
         ableToClimbing = CheckPos(climbPos,whatIsClimbable, true);
-        if(isGrounded == false)
+        if (states[0] == false)
         {
-            isHanging = CheckPos(hangPos,whatIsGround,!isGrounded);
+            states[2] = CheckPos(hangPos, whatIsGround, !states[0]);
         }
         Jump();
         UpdateAnim();
@@ -79,7 +83,7 @@ public class PlayerController : MonoBehaviour
     }
     private void GetDirection()
     {
-        if (!CheckPos(handPos,whatIsGround,isGrounded))
+        if (!CheckPos(handPos, whatIsGround, states[0]))
         {
             previousDirection = direction;
             previousX = currentX;
@@ -96,12 +100,12 @@ public class PlayerController : MonoBehaviour
     }
     private void Jump()
     {
-        if (Input.GetKeyDown("space") && (isGrounded || isClimbing))
+        if (Input.GetKeyDown("space") && (states[0] || states[1]))
         {
             rb.linearVelocity = Vector2.up * jumpAcceleration;
-            if (isClimbing)
+            if (states[1])
             {
-                isClimbing = false;
+                states[1] = false;
             }
         }
     }
@@ -135,92 +139,81 @@ public class PlayerController : MonoBehaviour
     }
     private void Flip()
     {
-        if(direction != previousDirection && !isHanging)
+        if(direction != previousDirection && !states[2])
         {
             Vector3 scaler = transform.localScale;
             scaler.x *= -1f;
             transform.localScale = scaler;
         }
-        isHanging = CheckPos(hangPos, whatIsGround, !isGrounded);
+        states[2] = CheckPos(hangPos, whatIsGround, !states[0]);
     }
-    /*private void CheckStanding()
-    {
-        if(currentX == previousX)
-        {
-            if(standingTime < 301f)
-            {
-                standingTime++;
-            }
-        }
-        else
-        {
-            standingTime = 0;
-        }
-    }*/
-    private void Climb()
+    private void CheckClimbing()
     {
         if (ableToClimbing)
         {
-            if(GetVertical() != 0)
+            if (GetVertical() != 0)
             {
-                isClimbing = true;
-            }
-            if(isClimbing)
-            {
-                if(GetVertical() != 0)
-                {
-                    verInput = GetVertical();
-                    rb.linearVelocity = new Vector2(moveInput * speed / 2.5f, verInput * speed);
-
-                }
-                else
-                {
-                    //to goblin don't slide while climbing
-                    rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0.1962f);
-                }
+                states[1] = true;
             }
         }
-        else
+        if(!ableToClimbing && states[1])
         {
-            isClimbing = false;
+            states[1] = false;
             //to can't start jump in air
+        }
+    }
+    private void Climb()
+    {
+        if (states[1])
+        {
+            if (GetVertical() != 0)
+            {
+                verInput = GetVertical();
+                rb.linearVelocity = new Vector2(moveInput * speed / 2.5f, verInput * speed);
+
+            }
+            else
+            {
+                //to goblin don't slide while climbing
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0.1962f);
+            }
         }
     }
     private void UpdateAnim()
     {
-        anim.SetBool("isOnGround", isGrounded);
-        anim.SetBool("isClimbing", isClimbing);
-        anim.SetBool("isHanging", isHanging);
-        anim.SetBool("isStanding", isStanding);
-        anim.SetBool("isIdle", isIdle);
+        anim.SetBool("isOnGround", states[0]);
+        anim.SetBool("isClimbing", states[1]);
+        anim.SetBool("isHanging", states[2]);
+        anim.SetBool("isStanding", states[3]);
+        anim.SetBool("isIdle", states[4]);
     }
     private void CheckStanding()
     {
-        if(isGrounded && previousX == currentX)
+        if (states[0] && previousX == currentX)
         {
-            isStanding = true;
+            states[3] = true;
         }
         else
         {
-            isStanding = false;
+            states[3] = false;
         }
     }
     private void CheckIdle()
     {
-        if (isGrounded && !isIdle)
+        if (states[0] && !states[4])
         {
-            if(isStanding)
+            if(states[3])
             {
                 standingTime++;
                 if (standingTime > 300)
                 {
-                    isIdle = true;
+                    states[4] = true;
                 }
             }
         }
-        if(isIdle && (!isStanding || isClimbing || !isGrounded))
+        if(states[4] && (!states[3] || states[1] || !states[0]))
         {
-            isIdle = false;
+            states[4] = false;
         }
     }
 
